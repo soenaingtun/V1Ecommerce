@@ -1,6 +1,8 @@
 package com.testing.visibleoneecommerce.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -122,69 +124,71 @@ fun ProductDetailScreen(navController: NavHostController,
         }
 
         state.data?.let { product ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Transparent)
-                    .padding(16.dp)
-            ) {
-                // Product image
-
-
-                Image(
-                    painter = rememberAsyncImagePainter(model = product.image),
-                    contentDescription = null,
+            AnimatedVisibility(visible = state.data != null) {
+                Box(
                     modifier = Modifier
-                        .size(180.dp)
-                        .align(Alignment.Center)
-                        .padding(10.dp),
-                    contentScale = ContentScale.Fit
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth()
+                        .background(Color.Transparent)
+                        .padding(16.dp)
                 ) {
-                    Box(
+                    // Product image
+
+
+                    Image(
+                        painter = rememberAsyncImagePainter(model = product.image),
+                        contentDescription = null,
                         modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
+                            .size(180.dp)
+                            .align(Alignment.Center)
+                            .padding(10.dp).animateContentSize(), // Add content size animation,
+                        contentScale = ContentScale.Fit
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = { navController.popBackStack() },
-                            modifier = Modifier.align(Alignment.Center)
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
                         ) {
-                            Icon(
-                                Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                                tint = Color.Black
-                            )
+                            IconButton(
+                                onClick = { navController.popBackStack() },
+                                modifier = Modifier.align(Alignment.Center)
+                            ) {
+                                Icon(
+                                    Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                        ) {
+                            IconButton(
+                                onClick = { /* Handle favorite click */ },
+                                modifier = Modifier.align(Alignment.Center)
+                            ) {
+                                Icon(
+                                    Icons.Default.Favorite,
+                                    contentDescription = "Favorite",
+                                    tint = Color(0xFFf68027)
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.White)
-                    ) {
-                        IconButton(
-                            onClick = { /* Handle favorite click */ },
-                            modifier = Modifier.align(Alignment.Center)
-                        ) {
-                            Icon(
-                                Icons.Default.Favorite,
-                                contentDescription = "Favorite",
-                                tint = Color(0xFFf68027)
-                            )
-                        }
-                    }
                 }
 
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             // Product details section
@@ -361,7 +365,9 @@ fun SizeSelector() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            if (selectedSize == size) Color(0xFFf68027) else Color.White
+                            animateColorAsState(
+                                targetValue = if (selectedSize == size) Color(0xFFf68027) else Color.White
+                            ).value
                         )
                 ) {
                     Text(text = size, color = Color.Black)
@@ -404,6 +410,7 @@ fun ColorSelector() {
                 ) {
                     // Show checkmark icon in the center if the color is selected
                     if (selectedColor == color) {
+
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Selected",

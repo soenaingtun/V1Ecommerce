@@ -1,6 +1,8 @@
 package com.testing.visibleoneecommerce.screen
 
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +34,11 @@ import com.testing.visibleoneecommerce.R
 import com.testing.visibleoneecommerce.model.ProductResponse
 import com.testing.visibleoneecommerce.viewmodel.ProductListViewModel
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +126,6 @@ fun ProductScreen(navController: NavHostController,
 
         Spacer(modifier = Modifier.height(16.dp))
 
-       // BottomNavigationBar()
     }
 }
 
@@ -258,12 +264,39 @@ fun ProductItem(
     imageRes: String, // This should be handled dynamically with image loading
     onClick: () -> Unit
 ) {
+
+    // State to manage the animation
+    var isVisible by remember { mutableStateOf(false) }
+
+    // Trigger animation when the item is first displayed
+    LaunchedEffect(Unit) {
+        isVisible = true
+    }
+
+    // Animate the opacity and scale
+    val alpha by animateFloatAsState(
+        targetValue = if (isVisible) 1f else 0f,
+        animationSpec = tween(durationMillis = 500)
+    )
+
+    val scale by animateFloatAsState(
+        targetValue = if (isVisible) 1f else 0.9f,
+        animationSpec = tween(durationMillis = 500)
+    )
+
+
+
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick).graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                alpha = alpha // Apply fade-in animation
+            ),
+
         colors = CardDefaults.cardColors(
             containerColor = Color.White // Set card background to white
         )
