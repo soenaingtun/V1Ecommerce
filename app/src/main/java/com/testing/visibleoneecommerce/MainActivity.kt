@@ -36,7 +36,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.testing.visibleoneecommerce.screen.MainScreen
-import com.testing.visibleoneecommerce.screen.MoreView
 import com.testing.visibleoneecommerce.screen.ProductDetailScreen
 import com.testing.visibleoneecommerce.screen.ProductScreen
 import com.testing.visibleoneecommerce.ui.theme.VisibleOneEcommerceTheme

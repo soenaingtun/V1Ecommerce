@@ -6,27 +6,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.List
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,12 +27,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.testing.visibleoneecommerce.ui.theme.VisibleOneEcommerceTheme
 
 data class TabBarItem(
     val title: String,
@@ -54,12 +43,12 @@ data class TabBarItem(
 fun MainScreen(navController: NavHostController) {
     // Setting up the individual tabs
     val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-    val alertsTab = TabBarItem(title = "Carts", selectedIcon = Icons.Filled.ShoppingCart, unselectedIcon = Icons.Outlined.ShoppingCart, badgeAmount = 7)
-    val settingsTab = TabBarItem(title = "Save", selectedIcon = Icons.Filled.Favorite, unselectedIcon = Icons.Outlined.Favorite)
-    val moreTab = TabBarItem(title = "Search", selectedIcon = Icons.Filled.Search, unselectedIcon = Icons.Outlined.Search)
+    val cartTab = TabBarItem(title = "Carts", selectedIcon = Icons.Filled.ShoppingCart, unselectedIcon = Icons.Outlined.ShoppingCart, badgeAmount = 3)
+    val saveTab = TabBarItem(title = "Save", selectedIcon = Icons.Filled.Favorite, unselectedIcon = Icons.Outlined.Favorite)
+    val searchTab = TabBarItem(title = "Search", selectedIcon = Icons.Filled.Search, unselectedIcon = Icons.Outlined.Search)
 
     // Creating a list of all the tabs
-    val tabBarItems = listOf(homeTab, alertsTab, settingsTab, moreTab)
+    val tabBarItems = listOf(homeTab, cartTab, saveTab, searchTab)
 
 //    VisibleOneEcommerceTheme {
 //        // A surface container using the 'background' color from the theme
@@ -77,15 +66,22 @@ fun MainScreen(navController: NavHostController) {
                     composable(homeTab.title) { 
                         ProductScreen(navController = navController)
                     }
-                    composable(alertsTab.title) { Text(alertsTab.title) }
-                    composable(settingsTab.title) { Text(settingsTab.title) }
-                    composable(moreTab.title) { MoreView() }
+                    composable(cartTab.title) {
+                        CartScreen(navController = navController)
+                    }
+                    composable(saveTab.title) {
+                        SaveScreen(navController = navController)
+                    }
+                    composable(searchTab.title) {
+                        SearchScreen(navController = navController)
+                    }
                     composable("productDetailScreen/{id}") {
                         val productId = it.arguments?.getString("id")
                         if (productId != null) {
                             ProductDetailScreen(navController,productId)
                         }
                     }
+
                 }
             }
 //        }
@@ -150,13 +146,4 @@ fun TabBarBadgeView(count: Int? = null) {
     }
 }
 
-@Composable
-fun MoreView() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text("Thing 1")
-        Text("Thing 2")
-        Text("Thing 3")
-        Text("Thing 4")
-        Text("Thing 5")
-    }
-}
+

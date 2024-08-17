@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -52,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,6 +83,44 @@ fun ProductDetailScreen(navController: NavHostController,
     ) {
         // Top navigation and image section
 
+        state.isLoading.let {
+            if (it) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(), // Fills the entire screen
+                    contentAlignment = Alignment.Center // Centers content both horizontally and vertically
+                ) {
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        //CircularProgressIndicator(color = Color.Black)
+                        Spacer(modifier = Modifier.height(250.dp))
+                        Text(text = "Loading...")
+                    }
+                }
+            }
+        }
+
+        state.error.let {
+
+            if(it.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(), // Fills the entire screen
+                    contentAlignment = Alignment.Center // Centers content both horizontally and vertically
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(250.dp))
+                        Text(text = it, color = Color.Red)
+                    }
+                }
+            }
+
+        }
+
         state.data?.let { product ->
             Box(
                 modifier = Modifier
@@ -89,20 +129,15 @@ fun ProductDetailScreen(navController: NavHostController,
                     .padding(16.dp)
             ) {
                 // Product image
-//                Image(
-//                    painter = painterResource(id = R.drawable.nike), // Replace with your image resource
-//                    contentDescription = "Nike Air Max 270",
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(16.dp)
-//                )
+
 
                 Image(
                     painter = rememberAsyncImagePainter(model = product.image),
                     contentDescription = null,
                     modifier = Modifier
                         .size(180.dp)
-                        .align(Alignment.Center).padding(10.dp),
+                        .align(Alignment.Center)
+                        .padding(10.dp),
                     contentScale = ContentScale.Fit
                 )
                 Row(
@@ -140,9 +175,9 @@ fun ProductDetailScreen(navController: NavHostController,
                             modifier = Modifier.align(Alignment.Center)
                         ) {
                             Icon(
-                                Icons.Default.FavoriteBorder,
+                                Icons.Default.Favorite,
                                 contentDescription = "Favorite",
-                                tint = Color.Red
+                                tint = Color(0xFFf68027)
                             )
                         }
                     }
@@ -159,7 +194,7 @@ fun ProductDetailScreen(navController: NavHostController,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Men's Shoes",
+                    text =  product.category ,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.Gray
                 )
@@ -194,18 +229,24 @@ fun ProductDetailScreen(navController: NavHostController,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Nike Air Max 270",
+                    text = product.title ,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f) // Use weight to allow title to take available space
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
-                    text = "$290.00",
+                    text = "$"+ product.price,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black
+
+                    modifier = Modifier
+                        .width(80.dp), // Set a fixed width
+                    maxLines = 1, // Limit to 1 line
+                    color = Color.Black,
+                    textAlign = TextAlign.Right // Align text to the right
                 )
             }
 
@@ -248,7 +289,7 @@ fun ProductDetailScreen(navController: NavHostController,
             Spacer(modifier = Modifier.height(16.dp))
 
             ExpandableDescription(
-                description = "This is a long description that can be expanded or collapsed. It provides detailed information about the item."
+                description = product.description
             )
 
             Divider()

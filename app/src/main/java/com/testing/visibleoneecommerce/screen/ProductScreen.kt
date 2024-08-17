@@ -32,6 +32,7 @@ import com.testing.visibleoneecommerce.R
 import com.testing.visibleoneecommerce.model.ProductResponse
 import com.testing.visibleoneecommerce.viewmodel.ProductListViewModel
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,12 +86,27 @@ fun ProductScreen(navController: NavHostController,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                   // CircularProgressIndicator()
+                    // CircularProgressIndicator()
                     //CircularProgressIndicator(color = Color.Black)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(text = "Loading...")
                 }
             }
+        }
+
+        state.error.let {
+
+            if(it.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = it, color = Color.Red)
+                }
+            }
+
         }
 
         state.data.let {
@@ -211,8 +227,6 @@ fun ProductList(products: List<ProductResponse>, // Replace with actual data typ
             }
         }
 
-
-
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(
             modifier = Modifier
@@ -233,13 +247,7 @@ fun ProductList(products: List<ProductResponse>, // Replace with actual data typ
             }
         }
 
-//        ProductItem(price = "$250.00", name = "Nike Air Vapormax 2020", imageRes = R.drawable.nike, onClick = {
-//            navController.navigate("productDetailScreen")
-//        })
-//        Spacer(modifier = Modifier.height(16.dp))
-//        ProductItem(price = "$280.00", name = "Nike React Miler 2", imageRes = R.drawable.puma, onClick = {
-//            navController.navigate("productDetailScreen")
-//        })
+
     }
 }
 
@@ -260,7 +268,7 @@ fun ProductItem(
             containerColor = Color.White // Set card background to white
         )
     ) {
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -271,7 +279,8 @@ fun ProductItem(
                 contentDescription = null,
                 modifier = Modifier
                     .size(140.dp)
-                    .align(Alignment.Center).padding(10.dp),
+                    .align(Alignment.Center)
+                    .padding(10.dp),
                 contentScale = ContentScale.Fit
             )
 
@@ -288,10 +297,7 @@ fun ProductItem(
 
             // Favorite Icon (Top Right)
             IconButton(
-                onClick =
-                {
-
-                },
+                onClick = {},
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(12.dp)
@@ -303,23 +309,9 @@ fun ProductItem(
                 )
             }
 
-            // Product Name (Bottom Left)
-            Text(
-                text = name,
-                maxLines = 1,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Gray,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(12.dp)
-            )
-
             // Shopping Cart Icon (Bottom Right)
             IconButton(
-                onClick = {
-
-                          },
+                onClick = {},
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(12.dp)
@@ -330,6 +322,26 @@ fun ProductItem(
                     imageVector = Icons.Default.ShoppingCart,
                     contentDescription = "Cart",
                     tint = Color.White
+                )
+            }
+
+            // Product Name (Bottom Left)
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 12.dp, bottom = 12.dp, end = 80.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = name,
+                    maxLines = 1,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomStart),
+                    overflow = TextOverflow.Ellipsis // Show "..." if the text overflows
                 )
             }
         }
